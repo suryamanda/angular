@@ -1,15 +1,15 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
-            <h1>Demo for Data Binding</h1>
-            <!--In order to use NgModel we need to import {FormsModule} from '@angular/forms' and same should be added to imports section in app.module.ts-->
-            User Name : <input type="text" class="form-control" [(ngModel)] = "username"> 
-            <p>{{username}}</p>  <!-- This is string interpolation-->
-            <!--ngModel is for two way binding-->
-            <!--[disabled] in button showcases the property binding-->
-            <!-- (click) in button shows the property event binding-->
-
-            <button class="btn btn-primary" [disabled] = "toggleButtonStatus()" (click)="onClickEvent()">Reset</button>
-</div>
+            <h1>Demo for Directives</h1>
+        <button class="btn btn-primary" (click) = "toggleDisplay()">Display Details</button>    
+        <p *ngIf="display">Secret Password = tuna</p>
+        <p *ngFor="let x of clicks"
+        [ngStyle]="{backgroundColor: x > 5 ? 'blue' : 'white'}"
+        [ngClass]="{'white-text': x > 5}">{{x}}</p>  <!-- ngClass will be used to decorate css classes based on conditon-->
+        <!--ngStyle will be used to load css styles based on condition-->
+        <!-- *ngFor and *ngIf are structural directives hence should be pre fixed with * -->
+        <!-- Inorder to apply styles to the current element we need to rely on the output from each iteration value-->
+        </div>
 </div>
 </div>
