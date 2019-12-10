@@ -1,9 +1,15 @@
 <div class="container">
     <div class="row">
         <div class="col-xs-12">
-<h1>Hi This is App html</h1>
-<app-success-alert></app-success-alert>
-<app-warning-alert></app-warning-alert>
+            <h1>Demo for Data Binding</h1>
+            <!--In order to use NgModel we need to import {FormsModule} from '@angular/forms' and same should be added to imports section in app.module.ts-->
+            User Name : <input type="text" class="form-control" [(ngModel)] = "username"> 
+            <p>{{username}}</p>  <!-- This is string interpolation-->
+            <!--ngModel is for two way binding-->
+            <!--[disabled] in button showcases the property binding-->
+            <!-- (click) in button shows the property event binding-->
+
+            <button class="btn btn-primary" [disabled] = "toggleButtonStatus()" (click)="onClickEvent()">Reset</button>
 </div>
 </div>
 </div>

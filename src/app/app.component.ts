@@ -6,5 +6,15 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'my-ng-app';
+  username : String ='';
+  
+
+  onClickEvent(){
+    this.username='';
+  }
+
+  toggleButtonStatus(){
+    return this.username === '';
+  }
+
 }
