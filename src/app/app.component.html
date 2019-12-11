@@ -1,15 +1,9 @@
 <div class="container">
     <div class="row">
-        <div class="col-xs-12">
-            <h1>Demo for Directives</h1>
-        <button class="btn btn-primary" (click) = "toggleDisplay()">Display Details</button>    
-        <p *ngIf="display">Secret Password = tuna</p>
-        <p *ngFor="let x of clicks; let i = index;"
-        [ngStyle]="{backgroundColor: i >= 5 ? 'blue' : 'white'}"
-        [ngClass]="{'white-text': i >= 5}">{{x}}</p>  <!-- ngClass will be used to decorate css classes based on conditon-->
-        <!--ngStyle will be used to load css styles based on condition-->
-        <!-- *ngFor and *ngIf are structural directives hence should be pre fixed with * -->
-        <!-- Inorder to apply styles to the current element we need to rely on the output from each iteration value-->
-        </div>
+        <div class="col-md-12">
+            <app-header></app-header>
+            <app-recipes></app-recipes>
+            <app-shopping-list></app-shopping-list>
+    </div>
 </div>
 </div>
