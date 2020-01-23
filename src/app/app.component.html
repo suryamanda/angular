@@ -39,6 +39,11 @@
       we can also use highlightColor = "yellow" instead of [] brackets
       we can also have an aliad name defined same as the custom directive and use as below
       [appBetterhighlight]="'red'" -->
+      <div [ngSwitch]="value">
+        <p *ngSwitchCase="1">This is One</p>
+        <p *ngSwitchCase="2">This is two</p>
+        <p *ngSwitchDefault>This is Default</p>
+      </div>
     </div>
   </div>
 </div>
