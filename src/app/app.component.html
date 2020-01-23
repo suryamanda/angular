@@ -24,8 +24,13 @@
         </li>
       </div>
       </ul>
-      <p appBasicHighlight>style me with basic directive</p>
-      <p appBetterHighlight>style me with basic directive</p>
-     </div>
+      <p appBasicHighlight >style me with basic directive</p>
+      <p appBetterHighlight [defaultColor]="'red'" [highlightColor]="'yellow'">style me with basic directive</p>
+      <!-- Here we can place the directive's properties side by side so the element will
+      find out the relavent propeties of the directive
+      we can also use highlightColor = "yellow" instead of [] brackets
+      we can also have an aliad name defined same as the custom directive and use as below
+      [appBetterhighlight]="'red'" -->
+    </div>
   </div>
 </div>
