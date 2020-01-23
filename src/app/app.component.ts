@@ -6,21 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  serverElements = [{type: 'server', name:'Test Server', content:'This is Test!'}];
-  
-  onServerAdded(serverData:{serverName: string, serverContent: string}) {
-    this.serverElements.push({
-      type: 'server',
-      name: serverData.serverName,
-      content: serverData.serverContent
-    });
-  }
-
-  onBlueprintAdded(bluePrintData:{serverName: string, serverContent: string}) {
-    this.serverElements.push({
-      type: 'blueprint',
-      name: bluePrintData.serverName,
-      content: bluePrintData.serverContent
-    });
-  }
+  oddNumbers = [1, 3, 5];
+  evenNumbers = [2, 4];
+  onlyOdd = false;
 }
