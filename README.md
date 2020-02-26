@@ -12,38 +12,44 @@
 </a>
 ````
 
---> routerLink is specifying a route
+> routerLink is specifying a route
 
-we need to import { Router } from '@angular/router'; to use navigation programmatically.
+#### Navigating Programmatically
 
-Navigating Programmatically -->
-onLoadServer(id: number) {
+we need to ````import { Router } from '@angular/router';```` to use navigation programmatically.
+
+````onLoadServer(id: number) {
     this.router.navigate(['/servers', id, 'edit']);
   }
+````
 
-  Using Relative Paths in Programmatic navigation -->
+#### Using Relative Paths in Programmatic navigation
 
-  we need to import router: ActivatedRoute from @angular/router
+we need to ````import router: ActivatedRoute from @angular/router````
 
-  this.router.navigate(['servers', id, 'edit'], {relativeTo : this.route});
-  --> This route would append to the current path
-  --> if we use / this would append to the root path.
+  ````this.router.navigate(['servers', id, 'edit'], {relativeTo : this.route}); ````
+  
+  This route would append to the current path
+  if we use / this would append to the root path.
 
-  Passing parameters to the route -->
-  { path: 'users/:id/:name', component: UserComponent }
+#### Passing parameters to the route
+  ````{ path: 'users/:id/:name', component: UserComponent }````
 
-Fetching Route Parameters -->
+#### Fetching Route Parameters
+
+````
 import { ActivatedRoute } from '@angular/router';
  constructor(private route: ActivateRoute) { }
 
  ngOnInit(){
      this.id = this.route.snapshot.params['id'];
  }
+````
+`If we use snapshot to retrieve path params and if we relaod he component from the same page, latest values will npot be read. so we ned to subcribe to the observale for getting the values after geting the values from snapshot.`
 
-If we use snapshot to retrieve path params and if we relaod he component from the same page, latest values will npot be read. so we ned to subcribe to the observale for getting the values after geting the values from snapshot.
+#### Fetching route parameters Reactively
 
-Fetching route parameters Reactively -->
-
+````
 ngOnInit() {
     this.user = {
       id: this.route.snapshot.params['id'],
@@ -57,51 +63,57 @@ ngOnInit() {
         }
       );
   }
-
+````
 we should also unsubscribe from the observable as these will reside in the memory.
 
-ngOnDestroy() {
+````ngOnDestroy() {
     this.paramsSubscription.unsubscribe();
   }
-
-Passing query parameters and retrieving data -->
+````
+#### Passing query parameters and retrieving data
 
 this.route.snapshot.queryParams
 this.route.snapshot.fragment
 
-to avoid issues with loading the data from the same component we should use subcription
+`to avoid issues with loading the data from the same component we should use subcription`
 
+````
 this.route.queryParams
       .subscribe(
         (queryParams: Params) => {
           this.allowEdit = queryParams['allowEdit'] === '1' ? true : false;
         }
       );
+````
+`The param values returned will be as string we can convert them to numbers by appending + before the value.`
 
-//the param values returned will be as string we can convert them to numbers by appending + before the value.
+#### Setting up child (nested) routes
 
-Setting up child (nested) routes -->
+````
 { path: 'users', component: UsersComponent, children: [
     { path: ':id/:name', component: UserComponent }] 
 }
+````
 
-Configuring the handling of Query parameters -->
-
+#### Configuring the handling of Query parameters
+````
 onEdit(){
     this.router.navigate(['edit], {relativeTo : this.route, queryParamsHandling : 'preserve'});
     }
-    // to preserve query params in the subsequent calls.
+````
+`to preserve query params in the subsequent calls.`
 
-Redirecting and wild Routes -->
-{path: 'not-found', component: ErrorPageComponent},
+#### Redirecting and wild Routes
+
+````{path: 'not-found', component: ErrorPageComponent},
 { path: '**', redirectTo: '/not-found'}
+````
+`while using redirects, we should use the property pathMatch: 'full'`
 
-while using redirects, we should use the property pathMatch: 'full'
+#### Route Guards & Protecting Routes with canActivate
 
-Route Guards & Protecting Routes with canActivate
-*************************************************
 auth-guard.service.ts
-
+````
 @Injectable()
 export class AuthGuard implements CanActivate, CanActivateChild {
   constructor(private authService: AuthService, private router: Router) {}
@@ -124,9 +136,10 @@ cahActivateChild(route: ActivatedRouteSnapshot,
               state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
               return this.canActivate(route, state);
     }
+````
+#### Protecting child routes with canActiveChild
 
-Protecting child routes with canActiveChild
-*******************************************
+````
 { path: 'servers',
     canActivateChild: [AuthGuard],
     component: ServersComponent,
@@ -134,13 +147,14 @@ Protecting child routes with canActiveChild
     { path: ':id', component: ServerComponent, resolve: {server: ServerResolver} },
     { path: ':id/edit', component: EditServerComponent}
   ] }
+````
 
 
+#### Controlling Navigation with canDeactivate 
 
-Controlling Navigation with canDeactivate 
-*****************************************
-Create an interface with a method declaration
+`Create an interface with a method declaration`
 
+````
 import { Observable } from 'rxjs/Observable';
 import { CanDeactivate, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 
@@ -156,10 +170,11 @@ export class CanDeactivateGuard implements CanDeactivate<CanComponentDeactivate>
     return component.canDeactivate();
   }
 }
-
+````
 we need to implement this interface in the target component 
-ex: canDeactivate method in EditServerComponent
+`ex:` canDeactivate method in EditServerComponent
 
+````
 canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
     if (!this.allowEdit) {
       return true;
@@ -180,19 +195,20 @@ canDeactivate(): Observable<boolean> | Promise<boolean> | boolean {
     { path: ':id', component: ServerComponent, resolve: {server: ServerResolver} },
     { path: ':id/edit', component: EditServerComponent, canDeactivate: [CanDeactivateGuard] }
   ] }
+````
 
-
-Passing static data to a route
-*******************************
+#### Passing static data to a route
+````
   { path: 'not-found', component: ErrorPageComponent, data: {message: 'Page not found!'} },
   { path: '**', redirectTo: '/not-found' }
+````
+`This data can be accessed in the component by router.snapshot.data['message']`
 
-this data can be accessed in the component by router.snapshot.data['message']
+#### Retrieveing Dynamic data with the resolve Data
 
-Retrieveing Dynamic data with the resolve Data
-**********************************************
-Load the data from backend befor ea route gets activated.
+`Load the data from backend befor ea route gets activated.`
 
+````
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot } from '@angular/router';
 import { Observable } from 'rxjs/Observable';
 import { Injectable } from '@angular/core';
@@ -213,10 +229,11 @@ export class ServerResolver implements Resolve<Server> {
     return this.serversService.getServer(+route.params['id']);
   }
 }
+````
 
+`in server.component.ts`
 
-in server.component.ts
-
+  ````
   ngOnInit() {
     this.route.data
       .subscribe(
@@ -225,12 +242,13 @@ in server.component.ts
         }
       );
   }
+````
+`Resolver provides the data to the target component from AppRoutingModule.`
 
-Resolver provides the data to the target component from AppRoutingModule.
+**Using resolver we can resolve the data directly by keeping the logic to reteive the data in
+a separate service, here in this case it is serverResoler.**
 
-Using resolver we can resolve the data directly by keeping the logic to reteive the data in
-a separate service, here in this case it is serverResoler.
-
+````
 {
     path: 'servers',
     canActivateChild: [AuthGuard],
@@ -239,17 +257,4 @@ a separate service, here in this case it is serverResoler.
     { path: ':id', component: ServerComponent, resolve: {server: ServerResolver} },
     { path: ':id/edit', component: EditServerComponent, canDeactivate: [CanDeactivateGuard] }
   ] }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+````
