@@ -1,6 +1,7 @@
-Routing in Angular
-Example router link usage -->
+# Routing in Angular
+#### Example router link usage -->
 
+````
 <a [routerLink]="['/servers', server.id]"
     [queryParams]="{allowEdit: server.id === 3 ? '1' : '0'}"
     fragment="loading"
@@ -9,6 +10,7 @@ Example router link usage -->
     *ngFor="let server of servers">
     {{ server.name }}
 </a>
+````
 
 --> routerLink is specifying a route
 
