@@ -78,4 +78,4 @@ ngOnInit() {
   }
 ```
 
-** NOTE: we should only use subject for cross component communication where we manually pass the values from one component to another component, it can not be used when we have @Output for emitting events**
+**NOTE: we should only use subject for cross component communication where we manually pass the values from one component to another component, it can not be used when we have @Output for emitting events**
