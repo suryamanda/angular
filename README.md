@@ -1,27 +1,81 @@
-# MyNgApp
+# Observable and subject usage
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.20.
+### creation of Observable
+Observable has three parts 
 
-## Development server
+**next:** Required. The handler for each delivered value called zero or more times after execution starts.
+**error:** Optional. The handler for error notification. The error halts the execution of the observable instance.
+**complete:** Optional. The handler for an execution-complete notification. The delayed values can continue to be delivered to a next handler after execution is complete.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+these three elements can be seen in the below code.
 
-## Code scaffolding
+```
+ngOnInit() {
+    const customIntervalObservable = Observable.create(observer => {
+      let count = 0;
+      setInterval(() => {
+        observer.next(count);
+        if (count === 5) {
+          observer.complete();
+        }
+        if (count > 3) {
+          observer.error(new Error('Count is greater 3!'));
+        }
+        count++;
+      }, 1000);
+    });
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+/*Below code describes applying pipe on observable to modify 
+the data and then subscribing to that data.*/
 
-## Build
+    this.firstObsSubscription = customIntervalObservable.pipe(filter(data => {
+      return data > 0;
+    }), map((data: number) => {
+      return 'Round: ' + (data + 1);
+    })).subscribe(data => {
+      console.log(data);
+    }, error => {
+      console.log(error);
+      alert(error.message);
+    }, () => {
+      console.log('Completed!');
+    });
+  }
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+```
 
-## Running unit tests
+### Use of subject
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Instead of using event emitter we can replace it with subject
 
-## Running end-to-end tests
+`user.service.ts`
+```
+@Injectable({providedIn: 'root'})
+export class UserService {
+   //defining a subject same as defining an event emitter
+  //activatedEmitter = new EventEmitter<boolean>();
+  activatedEmitter = new Subject<boolean>();
+}
+```
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+`user.component.ts`
+```
+onActivate() {
+    //produci subject same as emitting an event
+    //this.userService.activatedEmitter.emmit(true);
+    this.userService.activatedEmitter.next(true);
+  }
 
-## Further help
+```
+`app.component.ts`
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```
+ngOnInit() {
+    //subscribing to an observable, though we have used subjet we still will have an observable.
+    this.activatedSub = this.userService.activatedEmitter.subscribe(didActivate => {
+      this.userActivated = didActivate;
+    });
+  }
+```
+
+** NOTE: we should only use subject for cross component communication where we manually pass the values from one component to another component, it can not be used when we have @Output for emitting events**
