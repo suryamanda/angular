@@ -1,5 +1,7 @@
 import { Component, ViewChild, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormGroup, FormControl, Validators } from '@angular/forms';
+import { Observable } from 'rxjs';
+
 
 @Component({
   selector: 'app-root',
@@ -8,31 +10,46 @@ import { NgForm } from '@angular/forms';
 })
 export class AppComponent implements OnInit{
   
-  @ViewChild('f', { static: false }) signupForm: NgForm;
+  signupForm: FormGroup;
   defaultSubscription = "advanced";
-
-  user = {
-    email : '',
-    password:'',
-    subscription:''
-  }
-
-  submitted = false;
+  forbiddenName = 'Test';
+  submitted=false;
 
   ngOnInit() {
-   
-    
+    this.signupForm = new FormGroup({
+      'projectname' : new FormControl(null, [Validators.required, this.forbiddenProjectName.bind(this)]),
+      'mail': new FormControl(null, [Validators.required, Validators.email]),
+      'projectstatus': new FormControl('stable')
+    });
+      
   }
 
   onSubmit(){
-    console.log(this.signupForm);
-    this.submitted=true;
-    this.user.email=this.signupForm.value.mail;
-    this.user.subscription=this.signupForm.value.subscription;
-    this.user.password=this.signupForm.value.password;
-    this.signupForm.reset();
-  
+    this.submitted= true;
+   console.log(this.signupForm);
   }
+
+  forbiddenProjectName(control: FormControl): {[s: string]: boolean} {
+    if (this.forbiddenName === control.value) {
+      return {'nameIsForbidden': true};
+    }
+    return null;
+  }
+  
+  
+  forbiddenProjectNameAsync(control : FormControl) : Promise<any> | Observable<any>{
+const promise = new Promise<any>((resolve, reject) => {
+setTimeout(()=> {
+  if(control.value === 'Test'){
+    resolve({projectNameForbidden: true});
+
+  }else{
+    resolve(null);
+  }
+}, 1000);
+});
+return promise;
+}
 
   
 }
