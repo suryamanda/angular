@@ -6,14 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
- 
-  display: boolean = false;
-  clicks : any = [];
-  toggleDisplay(){
-    this.display= !this.display;
-    this.clicks.push(new Date());
-    
+  suggestUserName() {
+    const suggestedName = 'Superuser';
   }
- 
-
 }
