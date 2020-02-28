@@ -1,27 +1,217 @@
-# MyFirstApp
+# Angular forms with reactive programming approach
+Form gets created programmatically and synchronized with DOM
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.0.
+## Configuration
+`ReactiveFromsModule` should be added in imports section of app.module.ts
 
-## Development server
+```
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+export class AppComponent implements OnInit {
+  genders = ['male', 'female'];
+  signupForm: FormGroup;
+  forbiddenUsernames = ['Chris', 'Anna'];
 
-## Code scaffolding
+  constructor() {}
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+  ngOnInit() {
+    this.signupForm = new FormGroup({
+      'userData': new FormGroup({
+        'username': new FormControl(null, [Validators.required, this.forbiddenNames.bind(this)]),
+        'email': new FormControl(null, [Validators.required, Validators.email], this.forbiddenEmails)
+      }),
+      'gender': new FormControl('male'),
+      'hobbies': new FormArray([])
+    });
+  .
+  .
+  .
 
-## Build
+```
+## Syncing HTML and form
+formGroupName --> for grouping more than an html form element as a single object programmatically.
+formControlName --> to map the form element with the backend form element
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+*while submitting the form we dont need template as we have already linked the form elements
+using formGroup in app.component.ts file*
 
-## Running unit tests
+```
+<form [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+        <div formGroupName="userData">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              formControlName="username"
+              class="form-control">
+            <span
+              *ngIf="!signupForm.get('userData.username').valid && signupForm.get('userData.username').touched"
+              class="help-block">
+              <span *ngIf="signupForm.get('userData.username').errors['nameIsForbidden']">This name is invalid!</span>
+              <span *ngIf="signupForm.get('userData.username').errors['required']">This field is required!</span>
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+            </span>
+          </div>
+          .
+          .
+          .
+          .
+```
 
-## Running end-to-end tests
+## Adding validation to form elements
+Just like template approach having required in the html form will not work, we need to define the validation programmatically
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+```
+ ngOnInit() {
+    this.signupForm = new FormGroup({
+      'userData': new FormGroup({
+        'username': new FormControl(null, [Validators.required, this.forbiddenNames.bind(this)]),
+        'email': new FormControl(null, [Validators.required, Validators.email], this.forbiddenEmails)
+      }),
+      'gender': new FormControl('male'),
+      'hobbies': new FormArray([])
+    });
+    .
+    .
+    .
+```
 
-## Further help
+## CSS styling
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```
+input.ng-invalid.ng-touched{
+    border: 1px solid red;
+}
+```
+
+## Grouping form controls (form elements)
+```
+<div formGroupName="userData">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              formControlName="username"
+              class="form-control">
+            <span
+              *ngIf="!signupForm.get('userData.username').valid && signupForm.get('userData.username').touched"
+              class="help-block">
+              <span *ngIf="signupForm.get('userData.username').errors['nameIsForbidden']">This name is invalid!</span>
+              <span *ngIf="signupForm.get('userData.username').errors['required']">This field is required!</span>
+
+            </span>
+          </div>
+          <div class="form-group">
+            <label for="email">email</label>
+            <input
+              type="text"
+              id="email"
+              formControlName="email"
+              class="form-control">
+            <span
+              *ngIf="!signupForm.get('userData.email').valid && signupForm.get('userData.email').touched"
+              class="help-block">Please enter a valid email!</span>
+          </div>
+        </div>
+
+```
+
+backend component should have the below code to define the groups
+
+```
+ ngOnInit() {
+    this.signupForm = new FormGroup({
+      'userData': new FormGroup({
+        'username': new FormControl(null, [Validators.required, this.forbiddenNames.bind(this)]),
+        'email': new FormControl(null, [Validators.required, Validators.email], this.forbiddenEmails)
+      }),
+      'gender': new FormControl('male'),
+      'hobbies': new FormArray([])
+    });
+
+```
+
+## Arrays of Form Controls (FormArray)
+
+```
+hobbies : new FormArray([])  --> it should be part of the formGroup
+ 
+ onAddHobby() {
+    const control = new FormControl(null, Validators.required);
+    (<FormArray>this.signupForm.get('hobbies')).push(control);
+  }
+
+```
+
+```
+<div formArrayName="hobbies">
+          <h4>Your Hobbies</h4>
+          <button
+            class="btn btn-default"
+            type="button"
+            (click)="onAddHobby()">Add Hobby</button>
+          <div
+            class="form-group"
+            *ngFor="let hobbyControl of signupForm.get('hobbies').controls; let i = index">
+            <input type="text" class="form-control" [formControlName]="i">
+          </div>
+        </div>
+        
+```
+
+## Creating custom validators
+
+```
+forbiddenUsernames = ['Chris','Anna'];
+
+forbiddenNames(control: FormControl): {[s: string]: boolean} {
+    if (this.forbiddenUsernames.indexOf(control.value) !== -1) {
+      return {'nameIsForbidden': true};
+    }
+    return null;
+  }
+```
+
+## Using erro codes
+
+```
+ <span
+              *ngIf="!signupForm.get('userData.username').valid && signupForm.get('userData.username').touched"
+              class="help-block">
+              <span *ngIf="signupForm.get('userData.username').errors['nameIsForbidden']">This name is invalid!</span>
+              <span *ngIf="signupForm.get('userData.username').errors['required']">This field is required!</span>
+
+            </span>
+
+```
+
+## Status and Value changes
+
+```
+onNgInit(){
+    this.signupForm.valueChanges.subscribe(
+        (value) => console.log(value);
+    );
+
+    this.signupForm.statusChanges.subscribe(
+        (statuc) => console.log(status);
+    );
+}
+
+```
+
+
+## Setting and Patching values
+
+this.signupForm.setValue(
+    {
+        --- form data ---
+    }
+);
+
+this.signupForm.patchValue(
+    {
+        --- form data ---
+    }
+);
