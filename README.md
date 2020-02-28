@@ -1,27 +1,152 @@
-# MyFirstApp
+# Template Driven Angular Forms
+Form can be accessed by th ehelp of @Viewchild
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.0.
+@Viewchild('f') signupForm : NgForm;
 
-## Development server
+### Adding validation to check the user input
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+```
+<form (ngSubmit)="onSubmit()" #f="ngForm">
+        <div
+          id="user-data"
+          ngModelGroup="userData"
+          #userData="ngModelGroup">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              class="form-control"
+              ngModel
+              name="username"
+              required
+              #username="ngModel">   <!-- ngModel will be used to get the details of the current form tag using the template definition username-->
+          </div>
+          .
+          .
+          .
+          .
+          .
+</form>
+```
 
-## Code scaffolding
+# Adding CSS to angular forms
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```
+input.ng-invalid.ng-touched{
+    border: 1px solid red;
+}
+```
 
-## Build
+# outputting the validation error messages
+```
+<div class="form-group">
+            <label for="email">Mail</label>
+            <input
+              type="email"
+              id="email"
+              class="form-control"
+              ngModel
+              name="email"
+              required
+              email
+              #email="ngModel">
+            <span class="help-block" *ngIf="!email.valid && email.touched">Please enter a valid email!</span>
+          </div>
+```
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+# set default values with the ngModel property binding [ngModel]
 
-## Running unit tests
+```
+<select id="secret" class = "form-control" [ngModel]="defaultQuestion" name="secret">
+<option value="pet">Your first pet? </option>
+<option value="pet">Your first pet? </option>
+</select>
+```
+# using ngModel with two way binding
+```
+        <div class="form-group">
+          <textarea
+            name="questionAnswer"
+            rows="3"
+            class="form-control"
+            [(ngModel)]="answer"></textarea>
+        </div>
+        <p>Your reply: {{ answer }}</p>
+```
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+# Grouping form controls
 
-## Running end-to-end tests
+ngModelGroup should be used to group form control elements
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+```
+ <div
+          id="user-data"
+          ngModelGroup="userData"
+          #userData="ngModelGroup">
+          <div class="form-group">
+            <label for="username">Username</label>
+            <input
+              type="text"
+              id="username"
+              .
+              .
+              .
+```
 
-## Further help
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+# Handling radio buttons
+
+```
+<div class="radio" *ngFor="let gender of genders">
+          <label>
+            <input
+              type="radio"
+              name="gender"
+              ngModel
+              [value]="gender"
+              required>
+            {{ gender }}
+          </label>
+        </div>
+```
+
+# we can set the default values for the form using setValue
+
+```
+  suggestUserName() {
+    const suggestedName = 'Superuser';
+    // this.signupForm.setValue({
+    //   userData: {
+    //     username: suggestedName,
+    //     email: ''
+    //   },
+    //   secret: 'pet',
+    //   questionAnswer: '',
+    //   gender: 'male'
+    // });
+    this.signupForm.form.patchValue({
+      userData: {
+        username: suggestedName
+      }
+    });
+  }
+  ```
+
+# Extracting data from Form and reset the form data
+
+```
+ onSubmit() {
+    this.submitted = true;
+    this.user.username = this.signupForm.value.userData.username;
+    this.user.email = this.signupForm.value.userData.email;
+    this.user.secretQuestion = this.signupForm.value.secret;
+    this.user.answer = this.signupForm.value.questionAnswer;
+    this.user.gender = this.signupForm.value.gender;
+
+    this.signupForm.reset();
+  }
+
+  ```
+
+  
