@@ -35,12 +35,18 @@ export class ShoppingEditComponent implements OnInit {
         );
       }     
 
-  onAddItem(form: NgForm){
+  onSubmit(form: NgForm){
       const value = form.value;
       const newIngredient = new Ingredient(value.name, value.amount);
-      this.shoppingListService.addIngredient(newIngredient);
-
-  }
+      if(this.editMode){
+        this.shoppingListService.updateIngredient(this.editedIndexItem, newIngredient);
+      }else{
+        this.shoppingListService.addIngredient(newIngredient);
+      }
+      this.editMode = false;  // This edit mode needs to be changed to false as we need to get 
+      //the opton to add new items after the edit mode is complete
+      form.reset();
+    }
 
   ngOnDestroy(){
     this.subscription.unsubscribe();
