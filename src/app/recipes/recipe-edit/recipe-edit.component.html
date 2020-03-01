@@ -6,7 +6,8 @@
                     <button class="btn btn-success"
                      type="submit"
                      [disabled]="!recipeForm.valid">Save</button>
-                    <button class="btn btn-danger" type="button">Cancel</button>
+                    <button class="btn btn-danger" type="button"
+                    (click)="onCancel()">Cancel</button>
                 </div>
             </div>
             <div class="row">
@@ -28,7 +29,8 @@
                         <input type="text"
                         id="imagePath"
                         formControlName="imagePath"
-                        class="form-control">
+                        class="form-control"
+                        #imagePath>
                     </div>
                 </div>
             </div>
@@ -65,7 +67,9 @@
                             class="form-control">
                         </div>
                         <div class="col-xs-2">
-                            <button class="btn btn-danger">X</button>
+                            <button class="btn btn-danger"
+                            type="button" 
+                            (click)="onDeleteIngredient(i)">X</button>
                         </div>
                     </div>
                     <div class="row">
