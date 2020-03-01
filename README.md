@@ -1,27 +1,82 @@
-# MyFirstApp
+# Pipes in Angular
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.0.
+`https://angular.io/api?query=pipe`
 
-## Development server
+## Creating a custom pipe
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+custom pipe should be added in the app.module.ts as components
 
-## Code scaffolding
+```
+@Pipe({
+        name: 'shorten'
+    })
+export class ShortenPipe implements PipeTransform{
+    transform(value: any) {
+       return value.substr(0, 10)+ ' ...';
+    } 
+}
+```
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Parametarizing a pipe
 
-## Build
+```
+export class ShortenPipe implements PipeTransform{
+    transform(value: any, limit: number) {
+        if(value.length > limit){
+       return value.substr(0, limit)+ ' ...';
+        }
+        else{
+            return value;
+        }
+    } 
+}
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+<strong>{{ server.name | shorten:3 }}</strong>
 
-## Running unit tests
+```
+## Creating a filter pipe
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+```
+@Pipe({
+  name: 'filter'
+})
+export class FilterPipe implements PipeTransform {
+  transform(value: any, filterString: string, propName: string): any {
+    if(value.length === 0){
+      return value;
+    }
+    const resultArray = [];
+    for (const item of value){
+      if(item[propName] === filterString){
+        resultArray.push(item);
+      }
+    }
+    return resultArray;
+  }
+}
+```
 
-## Running end-to-end tests
+`we can apply this filter pipe with ngFor as ngFor also a representation`
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+```
+<div class="col-xs-12 col-sm-10 col-md-8 col-sm-offset-1 col-md-offset-2">
+      <input type="text" [(ngModel)]="filteredStatus">
+      <hr>
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let server of servers | filter:filteredStatus:'status'"
+          [ngClass]="getStatusClasses(server)">
+          <span
+            class="badge">
+            {{ server.status }}
+          </span>
+          <strong>{{ server.name | shorten:3 }}</strong> |
+          {{ server.instanceType | uppercase }} |
+          {{ server.started | date: 'fullDate'}}
+          <!-- date is a pipe and fullDate is a parameter-->
+        </li>
+      </ul>
+    </div>
 
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+```
