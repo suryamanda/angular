@@ -80,3 +80,20 @@ export class FilterPipe implements PipeTransform {
     </div>
 
 ```
+
+## Using async pipe
+
+If the data is coming from async calls, before the date being resolved object will be printed, 
+and the resolved value will never be printed so we should use async pipe to resolve the value.
+
+``` 
+<h2>App Status : {{appStatus | async}}</h2>
+```
+
+```
+appStatus = new Promise((resolve, reject) => {
+    setTimeout(() => {
+        resolve('stable');
+    }, 2000)
+  });
+```
