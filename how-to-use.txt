@@ -1,0 +1,56 @@
+HttpClient
+
+RxJs Operators -->
+
+catchError Operator --> 
+
+sending headers
+
+{
+headers : new HttpHeaders({
+'CustomHeaders': 'temp-headers'}),
+params : new HttpParams({})
+}
+
+
+Adding query params
+
+const params = new HttpParams();
+params.append('print', 'pretty');
+
+
+http.post(url, request, {observe : 'body'});
+
+body | response  events --> can be used
+
+{
+observe: 'body',
+responseType : 'json',
+headers : new HttpHeaders({....})
+}
+
+
+Interceptors :
+
+HttpInterceptor should be implemented
+
+providers : [{provide: HTTP_INTERCEPTOR, useClass: AuthInterceptorService, multi: true}]
+
+we can also modify the requests with the help of interceptors
+
+req.clone({
+headers: req.headers.append('Auth','xyz')
+});
+
+
+Response interceptors: 
+
+next.handle(modifiedRequest).pipe(
+tap(
+event => {
+....
+}))
+
+
+Multiple interceptors:
+

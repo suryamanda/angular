@@ -1,3 +1,7 @@
-.white-text{
-    color: white;
+.container {
+  margin-top: 30px;
+}
+
+.row {
+  margin: 20px 0;
 }
